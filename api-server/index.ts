@@ -1,7 +1,8 @@
-import { HapiServer } from './server';
+import 'reflect-metadata';
+import { HapiServer } from './src/core/server';
 
 const hapiServer = new HapiServer(3000, "localhost");
 hapiServer
     .start()
-    .then((instance) => console.log('Server running on %s', instance.info.uri))
-    .catch((error) => console.error());
+    .then((server) => console.log('Server running on %s', server.info.uri))
+    .catch((error) => console.error(error));
