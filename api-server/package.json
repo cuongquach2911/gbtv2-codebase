@@ -1,4 +1,6 @@
 {
+  "name": "api-codebase",
+  "version": "0.1.0",
   "dependencies": {
     "@hapi/boom": "^9.1.0",
     "@hapi/hapi": "^20.0.1",
@@ -8,7 +10,9 @@
     "@types/hapi__inert": "^5.2.1",
     "@types/hapi__joi": "^17.1.6",
     "@types/hapi__vision": "^5.5.2",
+    "@types/jsonwebtoken": "^8.5.0",
     "@types/node": "^14.14.7",
+    "crypto": "^1.0.1",
     "dotenv": "^8.2.0",
     "hapi-swagger": "^14.0.0",
     "joi": "^17.3.0",
@@ -17,7 +21,8 @@
     "reflect-metadata": "^0.1.13",
     "tslint": "^6.1.3",
     "tsyringe": "^4.4.0",
-    "typeorm": "^0.2.29"
+    "typeorm": "^0.2.29",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "nodemon": "^2.0.6",

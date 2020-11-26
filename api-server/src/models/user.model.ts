@@ -8,14 +8,17 @@ export interface IUser {
     userName: string;
     passWords?: string;
     birthday?: number;
+    email: string;
+    phone?: string;
     bio?: string;
+    isRoot: boolean;
     active: boolean;
     createdAt?: number;
     updatedAt?: number;
 }
 
 export const serializeUser = (user: User): User => {
-    delete user.passWords;
+    if (user) { delete user.passWords; }
     return user;
 }
 
@@ -33,17 +36,26 @@ export class User implements IUser {
     @Column({ length: 50 })
     userName: string;
 
-    @Column({ length: 20 })
+    @Column({ length: 256 })
     passWords?: string;
 
     @Column({ default: null, nullable: true })
     birthday: number;
 
+    @Column({ length: 256 })
+    email: string;
+
+    @Column({ length: 20, nullable: true })
+    phone: string;
+
     @Column({ type: "text", default: null, nullable: true })
     bio: string;
 
     @Column({ default: true })
-    active: boolean;
+    isRoot: boolean;
+
+    @Column({ default: true })
+    active: boolean;    
 
     @UpdateDateColumn({ type: "timestamp" })
     createdAt: number;

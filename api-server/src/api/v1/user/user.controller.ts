@@ -1,5 +1,6 @@
 import Boom from "@hapi/boom";
 import { inject, injectable } from "tsyringe";
+import { generateJwt } from "../../../helpers/auth.helper";
 import { IPagerPesponse } from "../../../interfaces/IPagerPesponse";
 import { IUser, User } from "../../../models/user.model";
 import { UserService } from "../../../services/user.service";
@@ -11,7 +12,6 @@ export interface ISigninPayload {
 
 export interface IUserJwt {
     userName: string,
-    passWords: string,
     isRoot: boolean,
     scopes: string[]
 }
@@ -21,7 +21,7 @@ export interface IUserController {
     getById(id: number): Promise<User>;
     getByUsername(username: string): Promise<User>;
     create(user: IUser): Promise<User>;
-    //signIn(signInPayload: ISigninPayload): Promise<IUserJwt>;
+    signIn(signInPayload: ISigninPayload): Promise<string>;
 }
 
 @injectable()
@@ -33,22 +33,31 @@ export class UserController implements IUserController {
     }
 
     public async getById(id: number): Promise<User> {
-        try {
-            return await this.userService.getById(id);
-        } catch (e) { throw Boom.notFound('User could not found !'); }
+        const user = await this.userService.getById(id);
+        if (!user) { throw Boom.notFound('User could not found'); }
+        return user;
     }
 
     public async getByUsername(userName: string): Promise<User> {
-        try {
-            return await this.userService.getByUsername(userName);
-        } catch (e) { throw Boom.notFound('User could not found !'); }
+        const user = await this.userService.getByUsername(userName);
+        if (!user) { throw Boom.notFound('User could not found'); }
+        return user;
     }
 
     public async create(user: IUser): Promise<User> {
+        const oldUser = await this.userService.getByUsername(user.userName);
+        if (oldUser) { throw Boom.badRequest('Your username has been existed in database.') }
         return await this.userService.create(user);
     }
 
-    // public async signIn(signInPayload: ISigninPayload): Promise<IUserJwt> {
-        
-    // }
+    public async signIn(signInPayload: ISigninPayload): Promise<string> {
+        const user = await this.userService.authUser(signInPayload.userName, signInPayload.passWords);
+        if (!user) { throw Boom.notFound('User could not found.'); }
+        const jwt = generateJwt({
+            userName: user.userName,
+            isRoot: user.isRoot,
+            scopes: []
+        });
+        return jwt;
+    }
 }

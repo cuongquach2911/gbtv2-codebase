@@ -5,3 +5,7 @@ This is example Api server that included:
 - Hapi server
 - Swagger
 - JWT
+- Log by Winston
+
+Next release
+- Add PostgreSQL docker

@@ -7,8 +7,9 @@ import { ICountAndRecords } from "../../../interfaces/ICountAndRecords";
 import { IResponse } from "../../../interfaces/IResponse";
 import { IRoute } from "../../../interfaces/IRoute";
 import { responseSchema } from "../../../interfaces/response.schema";
+import { authMiddleware } from "../../../middlewares/auth.middleware";
 import { IUser, User } from "../../../models/user.model";
-import { UserController } from "./user.controller";
+import { IUserJwt, UserController } from "./user.controller";
 import { userSchema } from "./user.validator";
 
 interface IUserRouter {
@@ -16,7 +17,7 @@ interface IUserRouter {
     getUserById(): void;
     getUserByUsername(): void;
     postUser(): void;
-    //signIn(): void;
+    signIn(): void;
 }
 
 export class UserRouter implements IRoute, IUserRouter {
@@ -69,6 +70,9 @@ export class UserRouter implements IRoute, IUserRouter {
                 tags: ['api'],
                 description: 'Public',
                 notes: `Get User's detail`,
+                pre: [
+                    { method: authMiddleware, assign: 'jwtUser' }
+                ],
                 response: {
                     schema: responseSchema.keys({ data: userSchema }),
                     failAction: 'log'
@@ -95,8 +99,11 @@ export class UserRouter implements IRoute, IUserRouter {
             path: this.prefixSingle + '/{id}',
             options: {
                 tags: ['api'],
-                description: 'Public',
+                description: 'Private',
                 notes: `Get User's detail`,
+                pre: [
+                    { method: authMiddleware, assign: 'jwtUser' }
+                ],
                 response: {
                     schema: userSchema,
                     failAction: 'log'
@@ -108,7 +115,11 @@ export class UserRouter implements IRoute, IUserRouter {
                 },
                 handler: async (request: Request, reply: ResponseToolkit) => {
                     const user: IUser | undefined = await this.userController.getByUsername(request.params.userName);
-                    return reply.response(user).code(200);
+                    return reply.response({
+                        statusCode: 200,
+                        message: JSON.stringify(request.pre.jwtUser),
+                        data: user
+                    } as IResponse).code(200);
                 }
             }
         });
@@ -121,7 +132,7 @@ export class UserRouter implements IRoute, IUserRouter {
             options: {
                 tags: ['api'],
                 description: 'Private',
-                notes: `Create new User`,
+                notes: `Create new User`,                
                 response: {
                     schema: responseSchema.keys({ data: userSchema }),
                     failAction: 'log'
@@ -130,47 +141,54 @@ export class UserRouter implements IRoute, IUserRouter {
                     payload: userSchema.keys({ passWords: Joi.string().required() })
                 },
                 handler: async (request: Request, reply: ResponseToolkit) => {
-                    const payload = request.payload as User;
-                    return reply.response(await this.userController.create(payload)).code(200);
+                    return reply.response(await this.userController.create(request.payload as User)).code(200);
                 }
             }
         });
     }
 
-    // signIn(): void {
-    //     this._server.route({
-    //         method: "POST",
-    //         path: this.prefixSingle,
-    //         options: {
-    //             tags: ['api'],
-    //             description: 'Private',
-    //             notes: `Log in to system and generating JWT token`,
-    //             response: {
-    //                 schema: responseSchema,
-    //                 failAction: 'log'
-    //             },
-    //             validate: {
-    //                 payload: Joi.object({
-    //                     userName: Joi.string(),
-    //                     passWords: Joi.string()
-    //                 })
-    //             },
-    //             handler: async (request: Request, reply: ResponseToolkit) => {
-    //                 const payload = request.payload as {
-    //                     userName: string,
-    //                     passWords: string
-    //                 };
+    signIn(): void {
+        this._server.route({
+            method: "POST",
+            path: this.prefixSingle + '/signin',
+            options: {
+                tags: ['api'],
+                description: 'Private',
+                notes: `Log in to system and generating JWT token`,
+                response: {
+                    schema: responseSchema,
+                    failAction: 'log'
+                },
+                validate: {
+                    payload: Joi.object({
+                        userName: Joi.string(),
+                        passWords: Joi.string()
+                    })
+                },
+                handler: async (request: Request, reply: ResponseToolkit) => {
+                    const payload = request.payload as {
+                        userName: string,
+                        passWords: string
+                    };
 
-    //                 const user: User | undefined = await this.userController.signIn(payload.userName);                   
-    //                 return reply.response(await this.userController.create(payload)).code(200);
-    //             }
-    //         }
-    //     });
-    // }
+                    const jwt = await this.userController.signIn({
+                        userName: payload.userName,
+                        passWords: payload.passWords
+                    });
+
+                    return reply.response({
+                        message: 'New JWT token has been generated to your account.',
+                        data: jwt
+                    } as IResponse).code(200);
+                }
+            }
+        });
+    }
 
     attach() {
         this.getUsers();
         this.getUserByUsername();
         this.postUser();
+        this.signIn();
     }
 }
