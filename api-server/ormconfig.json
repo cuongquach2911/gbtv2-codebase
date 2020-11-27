@@ -1,12 +1,12 @@
 {
   "type": "postgres",
-  "host": "localhost",
+  "host": "postgres_db",
   "port": 5432,
   "username": "postgres",
   "password": "13572468",
-  "database": "gbtv2_basedb",
+  "database": "api_default",
   "synchronize": true,
-  "logging": false,
+  "logging": true,
   "entities": [
     "src/models/*.ts"
   ],

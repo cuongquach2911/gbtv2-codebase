@@ -1,5 +1,5 @@
 import { Server } from '@hapi/hapi';
-import { autoLoadIoc, autoLoadRoutes } from '../configs/autoload';
+import { bootstrapIoc, bootstrapRoutes } from '../configs/bootstrap';
 import { connectToDatabase } from './db';
 import { plugins } from './plugins';
 
@@ -20,8 +20,8 @@ export class HapiServer {
 
     public async start(): Promise<Server> {
         await connectToDatabase();
-        autoLoadIoc();
-        autoLoadRoutes(this._instance);       
+        bootstrapIoc(this._instance);
+        bootstrapRoutes();       
 
         await this._instance.register(plugins);
         await this._instance.start();

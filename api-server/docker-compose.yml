@@ -1,0 +1,42 @@
+version: '3.2'
+
+services:
+  postgres_db:
+    image: postgres:9.4.1
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 13572468
+      POSTGRES_DB: api_default
+    volumes:
+      - pg_conf:/etc/postgresql
+      - pg_log:/var/log/postgresql
+      - pg_data:/var/lib/postgresql/data
+    ports:
+      - '127.0.0.1:5432:5432'
+    networks:
+      - pigs
+        
+  api_codebase:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - '3000:3000'
+    environment:
+      API_HOST: 0.0.0.0
+      API_PORT: 3000
+    depends_on:
+      - postgres_db
+    networks:
+      - pigs
+    restart: always
+
+networks:
+  pigs:
+    # Use a custom driver
+    driver: bridge
+
+volumes:
+  pg_data:
+  pg_conf:
+  pg_log:
