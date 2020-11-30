@@ -1,10 +1,10 @@
 import { Server } from "@hapi/hapi";
 import { inject, injectable } from "tsyringe";
 import { IRoute } from "../../../interfaces/IRoute";
-import { getUserByUserNameRoute } from "./routes/getUserByUserName.route";
-import { getUsersRoute } from "./routes/getUsers.route";
-import { postSignInRoute } from "./routes/postSignIn.route";
-import { postUserRoute } from "./routes/postUser.route";
+import { getUserByUserNameRoute } from "./routes/get-user-by-username.route";
+import { getUsersRoute } from "./routes/get-users.route";
+import { postSignInRoute } from "./routes/post-sign-in.route";
+import { postUserRoute } from "./routes/post-user.route";
 import { UserController } from "./user.controller";
 
 @injectable()

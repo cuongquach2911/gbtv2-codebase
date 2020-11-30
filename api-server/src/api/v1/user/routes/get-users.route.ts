@@ -1,7 +1,7 @@
 import { Request, ResponseToolkit, Server } from "@hapi/hapi";
 import Joi from "joi";
 import { convertPage } from "../../../../helpers/page.helper";
-import { countAndRecordsSchema } from "../../../../interfaces/countAndRecords.schema";
+import { countAndRecordsSchema } from "../../../../interfaces/count-and-records.schema";
 import { ICountAndRecords } from "../../../../interfaces/ICountAndRecords";
 import { UserController } from "../user.controller";
 import { userSchema } from "../user.validator";
