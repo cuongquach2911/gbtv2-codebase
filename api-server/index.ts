@@ -9,7 +9,7 @@ const hapiServer = new HapiServer(
 hapiServer
     .start()
     .then((server) => console.log('Server running on %s', server.info.uri))
-    .catch((error) => console.error(error));
+    .catch((error) => console.error(error));    
 
 process.on('unhandledRejection', (err) => {
     logger.log({ level: 'error', message: err + '' });

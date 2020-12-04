@@ -10,27 +10,28 @@ export const postSignInRoute = (server: Server, controller: UserController, path
         path,
         options: {
             tags: ['api'],
-            description: 'Private',
+            description: 'Public api',
             notes: `Log in to system and generating JWT token`,
+            auth: false,
             response: {
                 schema: responseSchema,
                 failAction: 'log'
             },
             validate: {
                 payload: Joi.object({
-                    userName: Joi.string(),
-                    passWords: Joi.string()
+                    username: Joi.string(),
+                    passwords: Joi.string()
                 })
             },
             handler: async (request: Request, reply: ResponseToolkit) => {
                 const payload = request.payload as {
-                    userName: string,
-                    passWords: string
+                    username: string,
+                    passwords: string
                 };
 
                 const jwt = await controller.signIn({
-                    userName: payload.userName,
-                    passWords: payload.passWords
+                    username: payload.username,
+                    passwords: payload.passwords
                 });
 
                 return reply.response({

@@ -16,7 +16,7 @@ services:
     networks:
       - pigs
         
-  api_codebase:
+  api_server:
     build:
       dockerfile: Dockerfile
       context: .

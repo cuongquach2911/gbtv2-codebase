@@ -12,8 +12,12 @@ export const getUsersRoute = (server: Server, controller: UserController, path: 
         path,
         options: {
             tags: ['api'],
-            description: 'Public',
+            description: 'Public api',
             notes: `Get Users`,
+            // pre: [
+            //     { method: authMiddleware, assign: 'jwtUser' }
+            // ],
+            // Demo middle ware how to work
             response: {
                 schema: countAndRecordsSchema.data.keys({ rows: Joi.array().items(userSchema) }),
                 failAction: 'log'

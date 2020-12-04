@@ -6,16 +6,9 @@ import { IUser, User } from "../../../models/user.model";
 import { UserService } from "../../../services/user.service";
 
 export interface ISigninPayload {
-    userName: string,
-    passWords: string
+    username: string,
+    passwords: string
 }
-
-export interface IUserJwt {
-    userName: string,
-    isRoot: boolean,
-    scopes: string[]
-}
-
 export interface IUserController {
     getUsers(name: null | string, page: number): Promise<IPagerPesponse>;
     getById(id: number): Promise<User>;
@@ -38,25 +31,25 @@ export class UserController implements IUserController {
         return user;
     }
 
-    public async getByUsername(userName: string): Promise<User> {
-        const user = await this.userService.getByUsername(userName);
+    public async getByUsername(username: string): Promise<User> {
+        const user = await this.userService.getByUserName(username);
         if (!user) { throw Boom.notFound('User could not found'); }
         return user;
     }
 
     public async create(user: IUser): Promise<User> {
-        const oldUser = await this.userService.getByUsername(user.userName);
+        const oldUser = await this.userService.getByUserName(user.username);
         if (oldUser) { throw Boom.badRequest('Your username has been existed in database.') }
         return await this.userService.create(user);
     }
 
     public async signIn(signInPayload: ISigninPayload): Promise<string> {
-        const user = await this.userService.authUser(signInPayload.userName, signInPayload.passWords);
+        const user = await this.userService.authUser(signInPayload.username, signInPayload.passwords);
         if (!user) { throw Boom.notFound('User could not found.'); }
         const jwt = generateJwt({
-            userName: user.userName,
+            username: user.username,
             isRoot: user.isRoot,
-            scopes: []
+            scope: []
         });
         return jwt;
     }

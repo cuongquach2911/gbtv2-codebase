@@ -11,14 +11,15 @@ export const postUserRoute = (server: Server, controller: UserController, path: 
         path,
         options: {
             tags: ['api'],
-            description: 'Private',
-            notes: `Create new User`,                
+            description: 'Public api',
+            notes: `Create new User`,
+            auth: false,
             response: {
                 schema: responseSchema.keys({ data: userSchema }),
                 failAction: 'log'
             },
             validate: {
-                payload: userSchema.keys({ passWords: Joi.string().required() })
+                payload: userSchema.keys({ passwords: Joi.string().required() })
             },
             handler: async (request: Request, reply: ResponseToolkit) => {
                 return reply.response(await controller.create(request.payload as User)).code(200);

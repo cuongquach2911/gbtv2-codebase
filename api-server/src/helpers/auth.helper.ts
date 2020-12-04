@@ -1,11 +1,10 @@
-import { IUserJwt } from "../api/v1/user/user.controller";
-
 import jwt from 'jsonwebtoken';
+import { IUserJwt } from '../interfaces/IUserJwt';
 
 export const generateJwt = (user: IUserJwt) => {
     return jwt.sign(
         user,
-        process.env.JWT_KEY + '',
+        `${process.env.JWT_KEY}`,
         {
             expiresIn: '7 days'
         });
@@ -14,7 +13,7 @@ export const generateJwt = (user: IUserJwt) => {
 export const verifyJwtToken = (token: string) => {
     return jwt.verify(
         token,
-        process.env.JWT_KEY + '',
+        `${process.env.JWT_KEY}`,
     );
 }
 

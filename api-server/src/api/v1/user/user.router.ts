@@ -33,7 +33,7 @@ export class UserRouter implements IRoute {
         getUserByUserNameRoute(
             this.server,
             this.userController,
-            this.prefixSingle + '/{userName}'
+            this.prefixSingle + '/{username}'
         );        
 
         postSignInRoute(
