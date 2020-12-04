@@ -49,7 +49,7 @@ export class UserController implements IUserController {
         const jwt = generateJwt({
             username: user.username,
             isRoot: user.isRoot,
-            scope: []
+            scope: user.scopes
         });
         return jwt;
     }

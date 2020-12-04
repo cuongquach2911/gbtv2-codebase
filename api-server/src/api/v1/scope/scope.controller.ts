@@ -27,6 +27,7 @@ export class ScopeController implements IScopeController {
     }
 
     public async getAllScopes(credentails: AuthCredentials) {
+        console.log(credentails);
         if (!credentails.isRoot && !credentails.scope?.includes(ScopeEnum.manage_user)) { throw Boom.notFound('User is not have permission for showing system scopes'); }
         return await this.scopeService.getAllScopes();
     }

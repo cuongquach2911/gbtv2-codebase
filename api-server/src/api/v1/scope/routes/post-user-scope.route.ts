@@ -15,7 +15,7 @@ export const postUserScopesRoute = (server: Server, controller: ScopeController,
             description: 'Public',
             notes: `Set scopes for user by username`,
             response: {
-                schema: Joi.array().items().valid({ ...Object.keys(ScopeEnum) }),
+                schema: Joi.array().items(Joi.string().valid(...Object.keys(ScopeEnum))),
                 failAction: 'log'
             },
             validate: {
@@ -23,11 +23,12 @@ export const postUserScopesRoute = (server: Server, controller: ScopeController,
                     username: Joi.string().required(),
                 }),
                 payload: Joi.object({
-                    scopes: Joi.array().items().valid({ ...Object.keys(ScopeEnum) })
+                    scopes: Joi.array().items(Joi.string().valid(...Object.keys(ScopeEnum)))
                 })
             },
             handler: async (request: Request, reply: ResponseToolkit) => {
                 const parsedPayload = request.payload as IScope;
+                console.log(parsedPayload);
                 return reply.response({
                     statusCode: 200,
                     data: await controller.setUserScopes(request.params.username, parsedPayload.scopes)
