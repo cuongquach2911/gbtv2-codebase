@@ -12,6 +12,7 @@ export interface IUser {
     email: string;
     phone?: string;
     bio?: string;
+    scopes: ScopeEnum[];
     isRoot: boolean;
     active: boolean;
     createdAt?: number;

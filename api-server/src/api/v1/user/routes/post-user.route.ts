@@ -22,7 +22,7 @@ export const postUserRoute = (server: Server, controller: UserController, path: 
                 payload: userSchema.keys({ passwords: Joi.string().required() })
             },
             handler: async (request: Request, reply: ResponseToolkit) => {
-                return reply.response(await controller.create(request.payload as User)).code(200);
+                return reply.response(await controller.upsert(request.payload as User)).code(200);
             }
         }
     });

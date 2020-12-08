@@ -4,19 +4,20 @@ import { UserRepository } from '../repositories/user.repository';
 import { ScopeEnum } from '../configs/scope.enum';
 
 export interface IScopeService {
-    getUserScopes(username: string): Promise<ScopeEnum[] | undefined>;
-    setUserScopes(username: string, scopes: ScopeEnum[]): Promise<ScopeEnum[] | undefined>;
+    fetchByUsername(username: string): Promise<ScopeEnum[] | undefined>;
+    updateByUsername(username: string, scopes: ScopeEnum[]): Promise<ScopeEnum[] | undefined>;
+    fetchAllScopes(): Promise<string[]>;
 }
 
 @injectable()
 export class ScopeService implements IScopeService {
     private repository = getCustomRepository(UserRepository);
 
-    async getUserScopes(username: string): Promise<ScopeEnum[] | undefined> {
+    async fetchByUsername(username: string): Promise<ScopeEnum[] | undefined> {
         return (await this.repository.findOne({ username }))?.scopes;
     }
 
-    async setUserScopes(username: string, scopes: ScopeEnum[]): Promise<ScopeEnum[] | undefined> {
+    async updateByUsername(username: string, scopes: ScopeEnum[]): Promise<ScopeEnum[] | undefined> {
         let user; if (user = await this.repository.findOne({ username })) {
             user.scopes = scopes;
             await this.repository.save(user);
@@ -24,7 +25,7 @@ export class ScopeService implements IScopeService {
         return user?.scopes;
     }
 
-    async getAllScopes(): Promise<string[]> {
+    async fetchAllScopes(): Promise<string[]> {
         return Object.keys(ScopeEnum);
     }
 }

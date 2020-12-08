@@ -7,17 +7,17 @@ import { UserRepository } from '../repositories/user.repository';
 import * as crypto from 'crypto';
 
 export interface IUserService {
-    getUsers(name: any, page: number): Promise<IPagerPesponse>;
-    getByUserName(username: string): Promise<User | undefined>;
-    getById(id: number): Promise<User | undefined>;
-    create(user: IUser): Promise<User>;
+    fetchAll(name: any, page: number): Promise<IPagerPesponse>;
+    fetchByUsername(username: string): Promise<User | undefined>;
+    fetchById(id: number): Promise<User | undefined>;
+    upsert(user: IUser): Promise<User>;
 }
 
 @injectable()
 export class UserService implements IUserService {
     private repository = getCustomRepository(UserRepository);
 
-    async getUsers(name: any, page: number): Promise<IPagerPesponse> {
+    async fetchAll(name: any, page: number): Promise<IPagerPesponse> {
         const [data, count] = await this.repository.findAndCount({
             where: {
                 ...(name ? { name } : {})
@@ -31,12 +31,12 @@ export class UserService implements IUserService {
         } as IPagerPesponse
     }
 
-    async getByUserName(username: string) {
+    async fetchByUsername(username: string) {
         const user = await this.repository.findOne({ username });
         return serializeUser(user as User);
     }
 
-    async getById(id: number) {
+    async fetchById(id: number) {
         const user = await this.repository.findOne({ id });
         return serializeUser(user as User);
     }
@@ -48,7 +48,7 @@ export class UserService implements IUserService {
         return serializeUser(user as User);
     }
 
-    async create(user: IUser): Promise<User> {
+    async upsert(user: IUser): Promise<User> {
         user.passwords = crypto.createHash('md5').update(user.passwords + '').digest('hex');
         const newUser = await this.repository.save(user);
         return serializeUser(newUser);

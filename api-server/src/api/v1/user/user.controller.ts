@@ -13,7 +13,7 @@ export interface IUserController {
     getUsers(name: null | string, page: number): Promise<IPagerPesponse>;
     getById(id: number): Promise<User>;
     getByUsername(username: string): Promise<User>;
-    create(user: IUser): Promise<User>;
+    upsert(user: IUser): Promise<User>;
     signIn(signInPayload: ISigninPayload): Promise<string>;
 }
 
@@ -22,25 +22,25 @@ export class UserController implements IUserController {
     constructor(@inject('IUserService') private userService: UserService) { }   
 
     public async getUsers(name: null | string, page: number) {
-        return await this.userService.getUsers(name, page);
+        return await this.userService.fetchAll(name, page);
     }
 
     public async getById(id: number): Promise<User> {
-        const user = await this.userService.getById(id);
+        const user = await this.userService.fetchById(id);
         if (!user) { throw Boom.notFound('User could not found'); }
         return user;
     }
 
     public async getByUsername(username: string): Promise<User> {
-        const user = await this.userService.getByUserName(username);
+        const user = await this.userService.fetchByUsername(username);
         if (!user) { throw Boom.notFound('User could not found'); }
         return user;
     }
 
-    public async create(user: IUser): Promise<User> {
-        const oldUser = await this.userService.getByUserName(user.username);
+    public async upsert(user: IUser): Promise<User> {
+        const oldUser = await this.userService.fetchByUsername(user.username);
         if (oldUser) { throw Boom.badRequest('Your username has been existed in database.') }
-        return await this.userService.create(user);
+        return await this.userService.upsert(user);
     }
 
     public async signIn(signInPayload: ISigninPayload): Promise<string> {
