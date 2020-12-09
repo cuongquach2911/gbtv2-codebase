@@ -2,9 +2,10 @@ import { Request, ResponseToolkit, Server } from "@hapi/hapi";
 import Joi from "joi";
 import { ScopeEnum } from "../../../../configs/scope.enum";
 import { IResponse } from "../../../../interfaces/IResponse";
+import { responseSchema } from "../../../../interfaces/response.schema";
 import { authMiddleware } from "../../../../middlewares/auth.middleware";
+import { IScope } from "../../../../models/scope.model";
 import { ScopeController } from "../scope.controller";
-import { IScope } from "../scope.router";
 
 export const postUserScopesRoute = (server: Server, controller: ScopeController, path: string) => {
     server.route({
@@ -12,10 +13,10 @@ export const postUserScopesRoute = (server: Server, controller: ScopeController,
         path,
         options: {
             tags: ['api'],
-            description: 'Public',
-            notes: `Set scopes for user by username`,
+            description: 'Set scopes for user by username',
+            notes: `Public`,
             response: {
-                schema: Joi.array().items(Joi.string().valid(...Object.keys(ScopeEnum))),
+                schema: responseSchema.keys({ data: Joi.array().items(Joi.string().valid(...Object.keys(ScopeEnum))) }),
                 failAction: 'log'
             },
             validate: {

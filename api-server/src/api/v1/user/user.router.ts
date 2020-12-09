@@ -5,6 +5,9 @@ import { getUserByUserNameRoute } from "./routes/get-user-by-username.route";
 import { getUsersRoute } from "./routes/get-users.route";
 import { postSignInRoute } from "./routes/post-sign-in.route";
 import { postUserRoute } from "./routes/post-user.route";
+import { putUpdatePasswordRoute } from "./routes/put-update-password.route";
+import { putUserByUsernameRoute } from "./routes/put-user-by-username.route";
+import { putUserRoute } from "./routes/put-user.route";
 import { UserController } from "./user.controller";
 
 @injectable()
@@ -40,6 +43,24 @@ export class UserRouter implements IRoute {
             this.server,
             this.userController,
             this.prefixSingle + '/signin'
+        );
+
+        putUpdatePasswordRoute(
+            this.server,
+            this.userController,
+            `${this.prefixSingle}/password`
+        );
+
+        putUserByUsernameRoute(
+            this.server,
+            this.userController,
+            `${this.prefixSingle}/{username}`
+        );
+
+        putUserRoute(
+            this.server,
+            this.userController,
+            this.prefixSingle
         );
     }
 }

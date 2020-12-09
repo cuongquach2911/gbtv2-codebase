@@ -2,14 +2,11 @@ import { Server } from "@hapi/hapi";
 import { inject, injectable } from "tsyringe";
 import { ScopeEnum } from "../../../configs/scope.enum";
 import { IRoute } from "../../../interfaces/IRoute";
-import { getAllScopes } from "./routes/get-all-scopes.route";
+import { getAllScopesRoute } from "./routes/get-all-scopes.route";
+import { getRoleScopesRoute } from "./routes/get-role-scopes.route";
 import { getUserScopesRoute } from "./routes/get-user-scopes.route";
 import { postUserScopesRoute } from "./routes/post-user-scope.route";
 import { ScopeController } from "./scope.controller";
-
-export interface IScope {
-    scopes: ScopeEnum[]
-}
 
 @injectable()
 export class ScopeRouter implements IRoute {
@@ -34,7 +31,13 @@ export class ScopeRouter implements IRoute {
             this.prefixPlural + '/user/{username}'
         );
 
-        getAllScopes(
+        getRoleScopesRoute(
+            this.server,
+            this.scopeController,
+            `${this.prefixPlural}/role/{id}`
+        );
+
+        getAllScopesRoute(
             this.server,
             this.scopeController,
             this.prefixPlural

@@ -3,29 +3,29 @@ import Joi from "joi";
 import { ScopeEnum } from "../../../../configs/scope.enum";
 import { IResponse } from "../../../../interfaces/IResponse";
 import { responseSchema } from "../../../../interfaces/response.schema";
-import { ScopeController } from "../scope.controller";
+import { IRole, Role } from "../../../../models/role.model";
+import { RoleController } from "../role.controller";
+import { roleSchema } from "../role.validator";
 
-export const getUserScopesRoute = (server: Server, controller: ScopeController, path: string) => {
+export const postRoleRoute = (server: Server, controller: RoleController, path: string) => {
     server.route({
-        method: "GET",
+        method: "POST",
         path,
         options: {
             tags: ['api'],
-            description: 'Get all scopes by username',
-            notes: `Public`,
+            description: 'Create new role',
+            notes: `Private`,
             response: {
-                schema: responseSchema.keys({ data: Joi.array().items().valid({ ...Object.keys(ScopeEnum) }) }),
+                schema: responseSchema.keys({ data: roleSchema }),
                 failAction: 'log'
             },
             validate: {
-                params: Joi.object({
-                    username: Joi.string().required()
-                })
+                payload: roleSchema
             },
             handler: async (request: Request, reply: ResponseToolkit) => {
                 return reply.response({
                     statusCode: 200,
-                    data: await controller.getUserScopes(request.params.username)
+                    data: await controller.upsert(request.payload as IRole)
                 } as IResponse).code(200);
             }
         }

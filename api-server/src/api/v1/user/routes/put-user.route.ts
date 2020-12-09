@@ -1,28 +1,30 @@
 import { Request, ResponseToolkit, Server } from "@hapi/hapi";
 import Joi from "joi";
 import { responseSchema } from "../../../../interfaces/response.schema";
-import { User } from "../../../../models/user.model";
+import { IUser, User } from "../../../../models/user.model";
 import { UserController } from "../user.controller";
 import { userSchema } from "../user.validator";
 
-export const postUserRoute = (server: Server, controller: UserController, path: string) => {
+export const putUserRoute = (server: Server, controller: UserController, path: string) => {
     server.route({
-        method: "POST",
+        method: "PUT",
         path,
         options: {
             tags: ['api'],
-            description: 'Create new User',
-            notes: `Public`,
-            auth: false,
+            description: 'Update current User',
+            notes: `Private`,
             response: {
                 schema: responseSchema.keys({ data: userSchema }),
                 failAction: 'log'
             },
             validate: {
-                payload: userSchema.keys({ password: Joi.string().required() })
+                payload: userSchema.keys({ password: Joi.string().optional() })
             },
             handler: async (request: Request, reply: ResponseToolkit) => {
-                return reply.response(await controller.upsert(request.payload as User)).code(200);
+                return reply.response(await controller.setUserByUsername(
+                    request.auth.credentials.username as string,
+                    request.payload as IUser
+                )).code(200);
             }
         }
     });

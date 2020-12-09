@@ -5,14 +5,14 @@ import { IResponse } from "../../../../interfaces/IResponse";
 import { IUserJwt } from "../../../../interfaces/IUserJwt";
 import { ScopeController } from "../scope.controller";
 
-export const getAllScopes = (server: Server, controller: ScopeController, path: string) => {
+export const getAllScopesRoute = (server: Server, controller: ScopeController, path: string) => {
     server.route({
         method: "GET",
         path,
         options: {
             tags: ['api'],
-            description: 'Public',
-            notes: `Get all system scopes`,
+            description: 'Get all system scopes',
+            notes: `Public`,
             handler: async (request: Request, reply: ResponseToolkit) => {
                 return reply.response({
                     statusCode: 200,

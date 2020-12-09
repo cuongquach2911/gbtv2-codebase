@@ -18,6 +18,7 @@ RUN npm install
 COPY . .
 
 EXPOSE 3000
+CMD [ "npm", "run", "migrate" ]
 CMD [ "npm", "run", "start" ]
 
 # RUN npm run start

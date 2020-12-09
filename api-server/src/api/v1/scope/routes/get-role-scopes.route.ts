@@ -5,13 +5,13 @@ import { IResponse } from "../../../../interfaces/IResponse";
 import { responseSchema } from "../../../../interfaces/response.schema";
 import { ScopeController } from "../scope.controller";
 
-export const getUserScopesRoute = (server: Server, controller: ScopeController, path: string) => {
+export const getRoleScopesRoute = (server: Server, controller: ScopeController, path: string) => {
     server.route({
         method: "GET",
         path,
         options: {
             tags: ['api'],
-            description: 'Get all scopes by username',
+            description: 'Get all scopes by Role Id',
             notes: `Public`,
             response: {
                 schema: responseSchema.keys({ data: Joi.array().items().valid({ ...Object.keys(ScopeEnum) }) }),
@@ -19,13 +19,13 @@ export const getUserScopesRoute = (server: Server, controller: ScopeController, 
             },
             validate: {
                 params: Joi.object({
-                    username: Joi.string().required()
+                    id: Joi.number().required()
                 })
             },
             handler: async (request: Request, reply: ResponseToolkit) => {
                 return reply.response({
                     statusCode: 200,
-                    data: await controller.getUserScopes(request.params.username)
+                    data: await controller.getRoleScopes(request.params.id)
                 } as IResponse).code(200);
             }
         }

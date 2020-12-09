@@ -17,18 +17,26 @@ export class ScopeController implements IScopeController {
     ) { }
 
     public async setUserScopes(username: string, scopes: ScopeEnum[]) {
-        let user; if (!(user = await this.scopeService.updateByUsername(username, scopes))) { throw Boom.notFound('User could not found'); }
+        let user; if (!(user = await this.scopeService.updateByUsername(username, scopes)))
+            { throw Boom.notFound('User could not found'); }
         return user;
     }
 
     public async getUserScopes(username: string) {
-        let user; if (!(user = await this.scopeService.fetchByUsername(username))) { throw Boom.notFound('User could not found'); }
+        let user; if (!(user = await this.scopeService.fetchByUsername(username)))
+            { throw Boom.notFound('User could not found'); }
+        return user;
+    }
+
+    public async getRoleScopes(id: number) {
+        let user; if (!(user = await this.scopeService.fetchByRoleId(id))) 
+            throw Boom.notFound('User could not found');
         return user;
     }
 
     public async getAllScopes(credentails: AuthCredentials) {
-        console.log(credentails);
-        if (!credentails.isRoot && !credentails.scope?.includes(ScopeEnum.manage_user)) { throw Boom.notFound('User is not have permission for showing system scopes'); }
+        if (!credentails.isRoot && !credentails.scope?.includes(ScopeEnum.manage_user))
+            { throw Boom.notFound('User is not have permission for showing system scopes'); }
         return await this.scopeService.fetchAllScopes();
     }
 }

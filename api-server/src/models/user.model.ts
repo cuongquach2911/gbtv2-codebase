@@ -1,45 +1,47 @@
-import { Column, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
-import { serialize } from 'v8';
+import { Column, Entity, Index, JoinColumn, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { ScopeEnum } from '../configs/scope.enum';
+import { IRole, Role } from './role.model';
 
 export interface IUser {
-    id: number;
     firstName: string;
     lastName: string;
     username: string;
-    passwords?: string;
+    password?: string;
     birthday?: number;
     email: string;
     phone?: string;
     bio?: string;
     scopes: ScopeEnum[];
     isRoot: boolean;
+    role: IRole;
     active: boolean;
     createdAt?: number;
     updatedAt?: number;
 }
 
 export const serializeUser = (user: User): User => {
-    if (user) { delete user.passwords; }
+    if (user) { delete user.password; }
     return user;
 }
 
 @Entity()
-export class User implements IUser {
-    @PrimaryGeneratedColumn()
-    id: number;
+export class User implements IUser {    
+    @PrimaryColumn({ length: 50 })
+    username: string;
 
-    @Column()
+    @Column({ length: 100 })
     firstName: string;
 
     @Column({ length: 100 })
     lastName: string;
 
-    @Column({ length: 50 })
-    username: string;
-
     @Column({ length: 256 })
-    passwords?: string;
+    password?: string;
+
+    @Index()
+    @ManyToOne(() => Role)
+    @JoinColumn()
+    role: Role;
 
     @Column({ default: null, nullable: true })
     birthday: number;

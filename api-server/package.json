@@ -35,6 +35,8 @@
     "watch": "nodemon -e ts --exec \"yarn run start\"",
     "start": "ts-node -r dotenv/config index.ts",
     "js-start": "tsc && node -r dotenv/config ./dist/index.js",
+    "migrate": "ts-node ./node_modules/typeorm/cli.js migration:run",
+    "typeorm-cli": "ts-node ./node_modules/typeorm/cli.js",
     "build": "tsc"
   }
 }

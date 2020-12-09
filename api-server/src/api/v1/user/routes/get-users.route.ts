@@ -12,8 +12,8 @@ export const getUsersRoute = (server: Server, controller: UserController, path: 
         path,
         options: {
             tags: ['api'],
-            description: 'Public api',
-            notes: `Get Users`,
+            description: 'Get Users',
+            notes: `Public`,
             // pre: [
             //     { method: authMiddleware, assign: 'jwtUser' }
             // ],
