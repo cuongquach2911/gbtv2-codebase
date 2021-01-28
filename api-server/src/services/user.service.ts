@@ -58,6 +58,7 @@ export class UserService implements IUserService {
     }
 
     async mergeScopesByRole(user: User, roleId: number): Promise<ScopeEnum[]> {
+        if (roleId < 0) return user.scopes;
         const role = await this.roleService.fetchById(roleId);
         return role ? [...user.scopes, ...role.scopes] : user.scopes;
     }

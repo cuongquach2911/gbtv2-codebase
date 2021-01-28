@@ -45,7 +45,7 @@ export class UserController implements IUserController {
         const jwt = generateJwt({
             username: user.username,
             isRoot: user.isRoot,
-            scope: await this.userService.mergeScopesByRole(user, user.role.id)
+            scope: await this.userService.mergeScopesByRole(user, (user.role ? user.role.id : -1))
         });
         return jwt;
     }
