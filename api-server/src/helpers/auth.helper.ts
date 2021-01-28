@@ -22,10 +22,10 @@ export const decodeJwtToken = (token: string) => {
     return jwt.decode(token) as IUserJwt;
 };
 
-export const extractUser = (request: Request) => {
+export const extractUser = (request: Request) : IUserJwt => {
     return {
         username: `${request.auth.credentials.user}`,
-        scopes: request.auth.credentials.scope,
+        scopes: request.auth.credentials.scopes,
         isRoot: request.auth.credentials.isRoot
     }
 };
